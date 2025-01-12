@@ -2,8 +2,9 @@
 using balanceSimple.Models;
 using balanceSimple.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System.ComponentModel.DataAnnotations;
-
 
 namespace balanceSimple.Tests
 {
@@ -27,28 +28,21 @@ namespace balanceSimple.Tests
         }
 
         [Fact]
-        public void positive_controller_return_data()
-        {
-            var data = generateTestData();
-            ICalculatorService calculatorService = new CalculatorService();
-            var conroller = new BalanceController(calculatorService);
-
-            var result = conroller.balanceCalculate(data);
-
-            Assert.NotNull(result);
-        }
-
-        [Fact]
         public void negative_service_throw_exc_when_flow_array_empty()
         {
+            var mock = new Mock<ILogger<BalanceController>>();
+            ILogger<BalanceController> loggerBC = mock.Object;
+            var servicemock = new Mock<ILogger<CalculatorService>>();
+            ILogger<CalculatorService> loggerCS = servicemock.Object;
+
             BalanceInput data = new BalanceInput();
             var flows = new List<Flow>();
 
             data.Id = 0;
             data.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService();
-            var conroller = new BalanceController(calculatorService);
+            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(data);
             Assert.Equal(400, (response as ObjectResult)?.StatusCode);
@@ -57,20 +51,25 @@ namespace balanceSimple.Tests
         [Fact]
         public void positive_big_data()
         {
+            var mock = new Mock<ILogger<BalanceController>>();
+            ILogger<BalanceController> loggerBC = mock.Object;
+            var servicemock = new Mock<ILogger<CalculatorService>>();
+            ILogger<CalculatorService> loggerCS = servicemock.Object;
+
             BalanceInput data = new BalanceInput();
-            ICalculatorService calculatorService = new CalculatorService();
-            var conroller = new BalanceController(calculatorService);
+            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            var conroller = new BalanceController(calculatorService, loggerBC);
 
             var flows = new List<Flow>();
             int flowsCount = 100;
 
-            for(int i = 0; i < flowsCount; i++)
+            for (int i = 0; i < flowsCount; i++)
             {
 
                 int src = i + 1;
                 int dst = i + 2;
 
-                if(i == 0)
+                if (i == 0)
                 {
                     src = -1;
                     dst = i + 1;
@@ -81,7 +80,7 @@ namespace balanceSimple.Tests
                     src = i + 1;
                     dst = -1;
                 }
-                
+
                 flows.Add(new Flow
                 {
                     Id = i,

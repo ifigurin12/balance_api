@@ -228,3 +228,5 @@ D:\vsc_project\par_and_raspr\BalanceSimple\balanceSimple.Tests\obj\Debug\net6.0\
 D:\vsc_project\par_and_raspr\BalanceSimple\balanceSimple.Tests\obj\Debug\net6.0\balanceSimple.Tests.pdb
 D:\vsc_project\par_and_raspr\BalanceSimple\balanceSimple.Tests\obj\Debug\net6.0\balanceSimple.Tests.genruntimeconfig.cache
 D:\vsc_project\par_and_raspr\BalanceSimple\balanceSimple.Tests\obj\Debug\net6.0\ref\balanceSimple.Tests.dll
+D:\vsc_project\par_and_raspr\BalanceSimple\balanceSimple.Tests\bin\Debug\net6.0\Castle.Core.dll
+D:\vsc_project\par_and_raspr\BalanceSimple\balanceSimple.Tests\bin\Debug\net6.0\Moq.dll

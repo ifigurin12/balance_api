@@ -2,6 +2,8 @@
 using balanceSimple.Models;
 using balanceSimple.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Http.Results;
 
@@ -12,6 +14,12 @@ namespace balanceSimple.Tests
         [Fact]
         public void negative_service_throw_exc_when_ub_less_then_lb()
         {
+
+            var mock = new Mock<ILogger<BalanceController>>();
+            ILogger<BalanceController> loggerBC = mock.Object;
+            var servicemock = new Mock<ILogger<CalculatorService>>();
+            ILogger<CalculatorService> loggerCS = servicemock.Object;
+
             BalanceInput balanceInput = new BalanceInput();
 
             var flows = new List<Flow>()
@@ -22,8 +30,8 @@ namespace balanceSimple.Tests
             balanceInput.Id = 0;
             balanceInput.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService();
-            var conroller = new BalanceController(calculatorService);
+            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(balanceInput);
             Assert.Equal(400, (response as ObjectResult)?.StatusCode);
@@ -32,6 +40,11 @@ namespace balanceSimple.Tests
         [Fact]
         public void negative_service_throw_exc_when_flow_is_missing()
         {
+            var mock = new Mock<ILogger<BalanceController>>();
+            ILogger<BalanceController> loggerBC = mock.Object;
+            var servicemock = new Mock<ILogger<CalculatorService>>();
+            ILogger<CalculatorService> loggerCS = servicemock.Object;
+
             BalanceInput balanceInput = new BalanceInput();
 
             var flows = new List<Flow>()
@@ -44,8 +57,8 @@ namespace balanceSimple.Tests
             balanceInput.Id = 0;
             balanceInput.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService();
-            var conroller = new BalanceController(calculatorService);
+            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(balanceInput);
             Assert.Equal(400, (response as ObjectResult)?.StatusCode);
@@ -54,6 +67,11 @@ namespace balanceSimple.Tests
         [Fact]
         public void negative_service_throw_exc_with_incorrect_value()
         {
+            var mock = new Mock<ILogger<BalanceController>>();
+            ILogger<BalanceController> loggerBC = mock.Object;
+            var servicemock = new Mock<ILogger<CalculatorService>>();
+            ILogger<CalculatorService> loggerCS = servicemock.Object;
+
             BalanceInput balanceInput = new BalanceInput();
 
             var flows = new List<Flow>()
@@ -66,8 +84,8 @@ namespace balanceSimple.Tests
             balanceInput.Id = 0;
             balanceInput.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService();
-            var conroller = new BalanceController(calculatorService);
+            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(balanceInput);
             Assert.Equal(400, (response as ObjectResult)?.StatusCode);
@@ -76,6 +94,11 @@ namespace balanceSimple.Tests
         [Fact]
         public void negative_service_throw_exc_with_incorrect_tols()
         {
+            var mock = new Mock<ILogger<BalanceController>>();
+            ILogger<BalanceController> loggerBC = mock.Object;
+            var servicemock = new Mock<ILogger<CalculatorService>>();
+            ILogger<CalculatorService> loggerCS = servicemock.Object;
+
             BalanceInput balanceInput = new BalanceInput();
 
             var flows = new List<Flow>()
@@ -88,8 +111,8 @@ namespace balanceSimple.Tests
             balanceInput.Id = 0;
             balanceInput.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService();
-            var conroller = new BalanceController(calculatorService);
+            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(balanceInput);
             Assert.Equal(400, (response as ObjectResult)?.StatusCode);
