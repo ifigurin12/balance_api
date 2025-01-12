@@ -10,25 +10,15 @@ namespace balanceSimple.Services
 {
     public class CalculatorService : ICalculatorService
     {
-        private readonly ILogger<CalculatorService> _logger;
-
-        public CalculatorService(ILogger<CalculatorService> logger)
-        {
-            _logger = logger;
-        }
-
         public BalanceOutput Calculate(BalanceInput balanceInput)
         {
-            _logger.LogInformation("Начат расчёт баланса. Входные данные: {@BalanceInput}", balanceInput);
 
             if (balanceInput.flows.Count == 0)
             {
-                _logger.LogWarning("Входной массив потоков пуст!");
                 throw new ValidationException("Message: Flow array is empty!");
             }
 
-            // Экземпляр класса калькулятор для вычислений
-            ICalculator calculator = new Calculators.Calculator();
+            ICalculator calculationStrategy = new AlglibCalculationStrategy();
 
             // Экземпляр выходных данных
             var outputData = new BalanceOutput();
@@ -47,8 +37,6 @@ namespace balanceSimple.Services
             double[] lb = new double[balanceInput.flows.Count];
             double[] ub = new double[balanceInput.flows.Count];
 
-            _logger.LogInformation("Инициализация массивов для расчётов завершена.");
-
             int i = 0;
             int size = 0;
 
@@ -56,23 +44,18 @@ namespace balanceSimple.Services
             {
                 if (flow.LowerBound > flow.UpperBound)
                 {
-                    _logger.LogError("Нижняя граница больше верхней для потока {FlowIndex}!", i + 1);
                     throw new ValidationException($"Message: Upper bound less then lower bound in flow {i + 1}!");
                 }
 
                 if (flow.Id != i)
                 {
-                    _logger.LogError("Пропущен поток с индексом {FlowIndex}!", i + 1);
                     throw new ValidationException($"Message: Flow {i + 1} is missing!");
                 }
 
                 if (flow.Value < 0 || flow.Tols < 0)
                 {
-                    _logger.LogError("Некорректные значения Value или Tols для потока {FlowIndex}!", i + 1);
                     throw new ValidationException($"Message: Value or tols are incorrect in {i + 1} flow");
                 }
-
-                _logger.LogWarning("Инициализация данных для потока {FlowName}: {FlowData}", flow.Name, flow);
 
                 names.Add(flow.Name);
                 startResults.Add(flow.Value);
@@ -101,20 +84,12 @@ namespace balanceSimple.Services
                 i++;
             }
 
-            _logger.LogInformation("Матрица ограничений Ab успешно сформирована. Размер: {Rows}x{Columns}", Ab.GetLength(0), Ab.GetLength(1));
-
-            // Запуск расчёта
-            _logger.LogInformation("Запуск вычислений с помощью Calculator.");
-            List<double> results = calculator.Calculate(iterCount, Ab, x0, errors, I, lb, ub);
-
-            _logger.LogInformation("Вычисления завершены. Результаты: {@Results}", results);
+            List<double> results = calculationStrategy.Calculate(iterCount, Ab, x0, errors, I, lb, ub);
 
             outputData.FlowsNames = names;
             outputData.InitValues = startResults;
             outputData.FinalValues = results;
             outputData.IsBalanced = checkBalanced(Ab, results);
-
-            _logger.LogInformation("Результаты проверки баланса: IsBalanced = {IsBalanced}", outputData.IsBalanced);
 
             return outputData;
         }
@@ -122,9 +97,8 @@ namespace balanceSimple.Services
         public bool checkBalanced(double[,] Ab, List<double> result)
         {
             bool isAppropriate = true;
-            double tolerance = 1e-6; // Задаем допустимую погрешность
-            double sum = 0;
 
+            double sum = 0;
             for (int i = 0; i < Ab.GetLength(0); i++)
             {
                 sum = 0;
@@ -133,10 +107,8 @@ namespace balanceSimple.Services
                     sum += Ab[i, j] * result[j];
                 }
 
-
-                if (Math.Abs(sum) > tolerance) // Проверка с учетом погрешности
+                if (Math.Round(sum, 1) != 0)
                 {
-                    _logger.LogWarning("Несоответствие баланса в узле {Node}: сумма = {Sum}.", i + 1, sum);
                     isAppropriate = false;
                     break;
                 }
@@ -144,6 +116,7 @@ namespace balanceSimple.Services
 
             return isAppropriate;
         }
+
 
     }
 }
