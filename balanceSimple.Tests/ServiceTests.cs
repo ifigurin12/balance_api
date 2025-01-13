@@ -17,8 +17,6 @@ namespace balanceSimple.Tests
 
             var mock = new Mock<ILogger<BalanceController>>();
             ILogger<BalanceController> loggerBC = mock.Object;
-            var servicemock = new Mock<ILogger<CalculatorService>>();
-            ILogger<CalculatorService> loggerCS = servicemock.Object;
 
             BalanceInput balanceInput = new BalanceInput();
 
@@ -30,7 +28,7 @@ namespace balanceSimple.Tests
             balanceInput.Id = 0;
             balanceInput.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            ICalculatorService calculatorService = new CalculatorService();
             var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(balanceInput);
@@ -42,8 +40,6 @@ namespace balanceSimple.Tests
         {
             var mock = new Mock<ILogger<BalanceController>>();
             ILogger<BalanceController> loggerBC = mock.Object;
-            var servicemock = new Mock<ILogger<CalculatorService>>();
-            ILogger<CalculatorService> loggerCS = servicemock.Object;
 
             BalanceInput balanceInput = new BalanceInput();
 
@@ -57,7 +53,7 @@ namespace balanceSimple.Tests
             balanceInput.Id = 0;
             balanceInput.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            ICalculatorService calculatorService = new CalculatorService();
             var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(balanceInput);
@@ -69,8 +65,6 @@ namespace balanceSimple.Tests
         {
             var mock = new Mock<ILogger<BalanceController>>();
             ILogger<BalanceController> loggerBC = mock.Object;
-            var servicemock = new Mock<ILogger<CalculatorService>>();
-            ILogger<CalculatorService> loggerCS = servicemock.Object;
 
             BalanceInput balanceInput = new BalanceInput();
 
@@ -84,7 +78,7 @@ namespace balanceSimple.Tests
             balanceInput.Id = 0;
             balanceInput.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            ICalculatorService calculatorService = new CalculatorService();
             var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(balanceInput);
@@ -96,8 +90,6 @@ namespace balanceSimple.Tests
         {
             var mock = new Mock<ILogger<BalanceController>>();
             ILogger<BalanceController> loggerBC = mock.Object;
-            var servicemock = new Mock<ILogger<CalculatorService>>();
-            ILogger<CalculatorService> loggerCS = servicemock.Object;
 
             BalanceInput balanceInput = new BalanceInput();
 
@@ -111,7 +103,7 @@ namespace balanceSimple.Tests
             balanceInput.Id = 0;
             balanceInput.flows = flows;
 
-            ICalculatorService calculatorService = new CalculatorService(loggerCS);
+            ICalculatorService calculatorService = new CalculatorService();
             var conroller = new BalanceController(calculatorService, loggerBC);
 
             var response = conroller.balanceCalculate(balanceInput);
